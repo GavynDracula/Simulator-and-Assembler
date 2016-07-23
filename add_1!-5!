@@ -1,0 +1,32 @@
+    BYTE    n = 5                 # 定义累加上限
+    LOADI	A	0            
+	LOADB	B	n                  # 用寄存器B暂时储存累加上限
+	LOADI	C	10                 # push循环中要用到10这个常数
+	LOADI	D	0
+	LOADI	E	0
+	LOADI	F	1
+	LOADI	G	0
+get:	ADDI	G	1              # get循环用于累加，将累加得到的结果储存在寄存器A中
+    MUL   F   F   G
+	ADD	  A	  A	  F
+	LT   G	 B
+	CJMP   get
+	LOADI	B	0
+	LOADI	G	0
+push:	DIV   F	  A	  C            # push循环用于提取累加结果的各位上的值，并从最低位开始将各位上的值压入SS
+	MUL	  D   F   C
+	SUB   E	  A   D
+	PUSH   E
+	ADD   A   F   B
+	ADDI   G   1
+	LT   B   A
+	CJMP   push
+out:	POP	  E                    # out循环用于将SS中各位的值一次取出并转换成字符输出
+	ADDI   E   48
+	OUT   E   15
+	ADDI   B   1
+	LT   B   G
+	CJMP   out
+    LOADI   F   10                 # 换行符的ASCII码是10
+    OUT   F   15                   # 输出换行符
+	HLT

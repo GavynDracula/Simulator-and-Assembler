@@ -1,0 +1,55 @@
+    LOADI	A	0
+	LOADI	B	10                 # 10为换行符的ASCII码
+	LOADI	C	0
+	LOADI	D	48                 # in循环中需要将输入的字符转换为数字，48为数字与其对应ASCLL码的差值
+	LOADI	E	0
+	LOADI	F	0
+	LOADI   G	0
+in:    IN    A   1                 # in循环用来将输入的10进制数（字符格式）转化为每位上的数字，并将其压入SS
+    SUB   C   A   D
+    PUSH   C
+    ADDI   G   1
+    EQU   A   B
+    NOTC
+    CJMP   in
+    POP   C
+    SUBI   G   1
+    LOADI   A   0
+    LOADI   D   0
+    LOADI   E   1
+get:    POP   C                    # get循环用于根据SS中储存的各位上的数子，得到输入的10进制的大小
+    SUBI   G   1
+    MUL   F   C   E
+    ADD   A   A   F
+    MUL   E   E   B
+    EQU   G   D
+    NOTC
+    CJMP   get
+    LOADI   D   16
+    LOADI   B   0
+to:    DIV   F   A   D             # to循环用于将10进制的数转化16进制，并将每位上的数字压入SS
+    MUL   C   F   D
+    SUB   E   A   C
+    PUSH   E
+    ADD   A   F   B
+    ADDI   G   1
+    LT   B   A
+    CJMP   to
+    LOADI   A   9
+out:   POP   E                     # out循环用于将储存在SS中各位上的数字输出
+    LTE   E   A
+    CJMP   num
+    NOTC
+    CJMP   alp
+next:    ADDI   B   1
+    LT   B   G
+    CJMP   out
+    LOADI   F   10                 # 换行符的ASCII码是10
+    OUT   F   15                   # 输出换行符
+    HLT
+num:   ADDI   E   48               # 对于9及其以下的数字的输出
+    OUT   E   15
+    JMP   next
+alp:   ADDI   E   55               # 对于10及其以上的数字转化为对应字母输出
+    OUT   E   15
+    JMP   next
