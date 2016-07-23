@@ -1,5 +1,5 @@
 # Simulator and Assembler
-#####Introduction
+###Introduction
 This project is for my C program improved curriculum design in HUST.
 The project is divided to two parts: assembler and simulator.
 The assembler is designed to convert the assemble source code to execution code which can be executed by simulator.
